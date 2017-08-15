@@ -1,9 +1,83 @@
 <html>
   <head>
+    <style>
+      .button {
+        background-color: green;
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      #simulation {
+        margin-bottom: 10px;
+      }
+
+      div.row {
+        height: 12px;
+      }
+      div.cell {
+        width: 10px;
+        height: 10px;
+        float: left;
+        border: 1px dotted lightgrey;
+      }
+      div.cell.dead {
+        background-color: gray;
+      }
+      div.cell.live {
+        background-color: white;
+      }
+    </style>
   </head>
   <body>
     <div id='game'></div>
-    <span id='next-generation'>Next Genration</span> <span id='simulation'>Start</span>
-    
+    <span class="button" id='next-generation'>Next Genration</span> <span class="button" id='start'>Start</span>
+    <script type='text/javascript' src='src/array.utils.js'></script>
+    <script type='text/javascript' src='src/simulation.js'></script>
+    <script type='text/javascript' src='src/simulation.renderer.js'></script>
+    <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+    <script type='text/javascript'>
+      simulation = new Simulation(10, 10);
+      simulationRenderer = new SimulationRenderer(simulation, 'game');
+      var simulate = false;
+      $('#next-generation').click(function(e){
+        e.preventDefault();
+        simulate = false;
+        nextStep();
+      });
+
+      function nextStep() {
+        $('#start')[0].style.backgroundColor = simulate ? 'red' : 'green';
+        $('#start')[0].innerText = simulate ? 'stop' : 'start';
+        simulation.next();
+        simulationRenderer.render();
+        if(simulate) {
+          setTimeout('nextStep();', 50);
+        }
+      }
+      $('#start').click(function(e){
+        e.preventDefault();
+        simulate = !simulate;
+        nextStep();
+      });
+
+      
+      
+      $('#game').on('click', '.cell', function(){
+        simulate = false;
+        var x = parseInt($(this).attr('pos-x'));
+        var y = parseInt($(this).attr('pos-y'));
+
+        var cell = simulation.getCell(x, y);
+        cell.toggle();
+
+        simulationRenderer.toggle(cell);
+      });
+    </script>
   </body>
 </html>
