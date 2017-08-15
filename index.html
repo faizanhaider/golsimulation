@@ -13,6 +13,10 @@
         cursor: pointer;
       }
 
+      #game {
+        display: none;
+      }
+
       #simulation {
         margin-bottom: 10px;
       }
@@ -35,48 +39,66 @@
     </style>
   </head>
   <body>
-    <div id='game'></div>
-    <span class="button" id='next-generation'>Next Genration</span> <span class="button" id='start'>Start</span>
+    <div id="instructions">
+      Size X: <input type="number" name="quantity" min="10" id="sizex"/>
+      Size Y: <input type="number" name="quantity" min="10" id ='sizey'/>
+      <span class="button" onclick='startGame();'>Start Game</span>
+    </div>
+
+    <div id='game'>
+      <span class="button" id='next-generation'>Next Genration</span> <span class="button" id='start'>Start</span>
+    </div>
+    
     <script type='text/javascript' src='src/array.utils.js'></script>
     <script type='text/javascript' src='src/simulation.js'></script>
     <script type='text/javascript' src='src/simulation.renderer.js'></script>
     <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
     <script type='text/javascript'>
-      simulation = new Simulation(100, 100);
-      simulationRenderer = new SimulationRenderer(simulation, 'game');
       var simulate = false;
-      $('#next-generation').click(function(e){
-        e.preventDefault();
-        simulate = false;
-        nextStep();
-      });
-
-      function nextStep() {
-        $('#start')[0].style.backgroundColor = simulate ? 'red' : 'green';
-        $('#start')[0].innerText = simulate ? 'stop' : 'start';
-        simulation.next();
-        simulationRenderer.render();
-        if(simulate) {
-          setTimeout('nextStep();', 50);
-        }
+      function startGame() {
+        var x = $('#sizex').val();
+        var y = $('#sizey').val();
+        $('#instructions')[0].style.display = 'none';
+        $('#game')[0].style.display = 'block';
+        setGrid(x,y);
+      };
+      function setGrid (sizeX, sizeY) {
+        simulation = new Simulation(sizeX, sizeY);
+        simulationRenderer = new SimulationRenderer(simulation, 'game');
       }
+       
+        $('#next-generation').click(function(e){
+          e.preventDefault();
+          simulate = false;
+          nextStep();
+        });
 
-      $('#start').click(function(e){
-        e.preventDefault();
-        simulate = !simulate;
-        nextStep();
-      });
+        function nextStep() {
+          $('#start')[0].style.backgroundColor = simulate ? 'red' : 'green';
+          $('#start')[0].innerText = simulate ? 'stop' : 'start';
+          simulation.next();
+          simulationRenderer.render();
+          if(simulate) {
+            setTimeout('nextStep();', 50);
+          }
+        }
 
-      $('#game').on('click', '.cell', function(){
-        simulate = false;
-        var x = parseInt($(this).attr('pos-x'));
-        var y = parseInt($(this).attr('pos-y'));
+        $('#start').click(function(e){
+          e.preventDefault();
+          simulate = !simulate;
+          nextStep();
+        });
 
-        var cell = simulation.getCell(x, y);
-        cell.toggle();
+        $('#game').on('click', '.cell', function(){
+          simulate = false;
+          var x = parseInt($(this).attr('pos-x'));
+          var y = parseInt($(this).attr('pos-y'));
 
-        simulationRenderer.toggle(cell);
-      });
+          var cell = simulation.getCell(x, y);
+          cell.toggle();
+
+          simulationRenderer.toggle(cell);
+        });
     </script>
   </body>
 </html>

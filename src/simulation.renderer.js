@@ -1,7 +1,7 @@
 function SimulationRenderer(simulation, targetId) {
   this.simulation = simulation;
   this.targetId = targetId;
-  $('#' + targetId).append('<div id="simulation" />');
+  $('#' + targetId).prepend('<div id="simulation" />');
   this.render();
 }
 
