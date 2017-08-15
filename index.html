@@ -42,7 +42,7 @@
     <script type='text/javascript' src='src/simulation.renderer.js'></script>
     <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
     <script type='text/javascript'>
-      simulation = new Simulation(10, 10);
+      simulation = new Simulation(100, 100);
       simulationRenderer = new SimulationRenderer(simulation, 'game');
       var simulate = false;
       $('#next-generation').click(function(e){
@@ -60,14 +60,13 @@
           setTimeout('nextStep();', 50);
         }
       }
+
       $('#start').click(function(e){
         e.preventDefault();
         simulate = !simulate;
         nextStep();
       });
 
-      
-      
       $('#game').on('click', '.cell', function(){
         simulate = false;
         var x = parseInt($(this).attr('pos-x'));
